@@ -1,0 +1,85 @@
+# Specify the Docker Compose version
+version: "3.8"
+
+services:
+
+  # Define the MariaDB service
+  mariadb:
+    # Use a custom MariaDB image
+    image: mariadb:user
+    # Set a custom container name for clarity
+    container_name: mariadb
+    # Build the image from the specified directory
+    build: requirements/mariadb
+    # Mount a volume for data persistence
+    volumes:
+      - mariadb:/var/lib/mysql
+    # Load environment variables from the .env file
+    env_file:
+      - .env
+    # Connect the container to the specified network
+    networks:
+      - inception
+    # Ensure the container restarts on failure or crash
+    restart: always
+
+  # Define the NGINX service
+  nginx:
+    image: nginx:user
+    container_name: nginx
+    build: requirements/nginx
+    # Map port 443 of the host to the container for HTTPS access
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    restart: always
+
+  # Define the WordPress service
+  wordpress:
+    image: wordpress:user
+    container_name: wordpress
+    build: requirements/wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/wordpress
+    env_file:
+      - .env
+    networks:
+      - inception
+    restart: always
+
+# Define persistent volumes for data storage
+volumes:
+    # Volume for MariaDB data
+    mariadb:
+      name: mariadb
+      # Use the local driver for volume storage
+      driver: local
+      driver_opts:
+        # Specify the host path for volume data storage
+        device: /home/hanglade/data/mariadb
+        # Bind mount to link the host path directly to the container
+        o: bind
+        # No specific type; relies on the bind option for mounting
+        type: none
+    # Volume for WordPress data
+    wordpress:
+      name: wordpress
+      driver: local
+      driver_opts:
+        device: /home/hanglade/data/wordpress
+        o: bind
+        type: none
+
+# Define the Docker network for container communication
+networks:
+    inception:
+      name: inception
+      # Use the bridge driver to create an isolated network for container communication an internet communication
+      driver: bridge
