@@ -1,6 +1,6 @@
 WP_DATA = /home/hanglade/data/wordpress
 DB_DATA = /home/hanglade/data/mariadb
-DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
+DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
 
 all:up
 
