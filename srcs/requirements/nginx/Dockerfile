@@ -20,7 +20,8 @@ COPY /conf/nginx.conf /etc/nginx/nginx.conf
 # Create the WordPress directory where files will be served
 RUN mkdir -p /var/www/wordpress
 
-# Change ownership of the WordPress directory to the NGINX user for proper permissions
+# Change ownership of the WordPress directory (-R = recursive mode) to the NGINX user for proper permissions
+# www-data:www-data == nginxUserId:nginxGroupId => nginx process uses this userId and groupId to work
 RUN chown -R www-data:www-data /var/www/wordpress
 
 # Copy the nginx_conf.sh script into the container (at the root /)

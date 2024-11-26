@@ -1,0 +1,58 @@
+#DOCKER COMMANDS
+# Build images
+docker build -t <imageName>:<tag> # in the dir of the dockerfile
+
+# List images
+docker images #list built images
+
+# Create a container
+docker run <imageName> #-d run detached(background), -p <containerPort>:<hostPort>(map port)
+
+# List containers
+docker ps #-a (all) 
+
+# Delete all stopped/unused Docker resources(networks, volumes, containers, images)
+docker system prune 
+
+# Clean all
+docker stop $(docker ps -qa); #stop active containers \
+docker rm $(docker ps -qa); #remove active containers \
+docker rmi -f $(docker images -qa); #remove built images \
+docker volume rm $(docker volume ls -q); #remove volumes \
+docker network rm $(docker network ls -q) 2>/dev/null #remove network
+
+# Get logs from a container
+docker logs <containerID> #view logs of a container
+
+# View the running processes inside a container
+docker top <containerID> #show the running processes inside the container
+
+# Execute a command in a running container
+docker exec -it <containerID> <command> # run interactive command inside the container (like bash)
+
+# Start a stopped container
+docker start <containerID> 
+
+# Stop a running container
+docker stop <containerID>
+
+# Remove a specific container
+docker rm <containerID>
+
+# Remove a specific image
+docker rmi <imageID>
+
+# Create and start a container (auto-starts it)
+docker create <imageName> 
+
+# Inspect a container or image for detailed information
+docker inspect <containerID or imageID> 
+
+# View real-time stats of running containers
+docker stats <containerID> 
+
+# Pull an image from Docker Hub
+docker pull <imageName>:<tag> 
+
+# Push an image to Docker Hub (requires login)
+docker push <imageName>:<tag>

@@ -60,13 +60,15 @@ volumes:
     # Volume for MariaDB data
     mariadb:
       name: mariadb
-      # Use the local driver for volume storage
+      # Use the local driver for volume storage (volume are managed by the host's filesystem)
       driver: local
+      # This section provides additional options to configure the behavior of the volume.
       driver_opts:
         # Specify the host path for volume data storage
         device: /home/hanglade/data/mariadb
         # Bind mount to link the host path directly to the container
-        o: bind
+        # Any changes made to the data inside the host will be reflected inside the container
+        o: bind 
         # No specific type; relies on the bind option for mounting
         type: none
     # Volume for WordPress data
@@ -82,5 +84,6 @@ volumes:
 networks:
     inception:
       name: inception
-      # Use the bridge driver to create an isolated network for container communication an internet communication
+      # The 'bridge' driver creates a private internal network on the host, 
+      # where containers can communicate with each other and with the outside world through port mapping.
       driver: bridge

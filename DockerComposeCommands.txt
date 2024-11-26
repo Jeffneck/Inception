@@ -1,0 +1,36 @@
+#DOCKER COMPOSE COMMANDS 
+# Start services defined in a docker-compose.yml file
+docker-compose up 
+
+# Start services in the background (detached mode)
+docker-compose up -d 
+
+# Stop services running with Docker Compose
+docker-compose down #stop and remove all containers defined in the docker-compose.yml
+
+# View logs of all services defined in docker-compose.yml
+docker-compose logs 
+
+# List containers running via Docker Compose
+docker-compose ps 
+
+# Build images for the services in a docker-compose.yml file
+docker-compose build
+
+# Execute a command in a running service container from a docker-compose project
+docker-compose exec <serviceName> <command> 
+
+# Stop specific services in a Docker Compose setup
+docker-compose stop <serviceName>
+
+# Remove containers defined in a Docker Compose setup
+docker-compose rm
+
+# View the status of all containers in a Docker Compose setup
+docker-compose ps
+
+# Rebuild a specific service in a Docker Compose setup
+docker-compose up --build <serviceName>
+
+# Scale a service to multiple instances in Docker Compose
+docker-compose up --scale <serviceName>=<numberOfInstances>
