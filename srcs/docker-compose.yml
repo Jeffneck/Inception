@@ -11,7 +11,7 @@ services:
     container_name: mariadb
     # Build the image from the specified directory
     build: requirements/mariadb
-    # Mount a volume for data persistence
+    # Mount a volume located in the host filesystem for data persistence
     volumes:
       - mariadb:/var/lib/mysql
     # Load environment variables from the .env file
@@ -28,9 +28,10 @@ services:
     image: nginx:user
     container_name: nginx
     build: requirements/nginx
-    # Map port 443 of the host to the container for HTTPS access
+    # Map port 443 of the container to the port 443 of the host for HTTPS access
     ports:
       - "443:443"
+    # helps define the startup order, but does not manage the service availability (see .sh scripts)
     depends_on:
       - wordpress
     volumes:

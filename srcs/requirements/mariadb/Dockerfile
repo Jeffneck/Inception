@@ -8,4 +8,4 @@ COPY /conf/mdb-conf.sh /mdb-conf.sh
 
 RUN chmod +x /mdb-conf.sh
 
-ENTRYPOINT ["./mdb-conf.sh"]
+ENTRYPOINT ["/bin/bash", "./mdb-conf.sh"]

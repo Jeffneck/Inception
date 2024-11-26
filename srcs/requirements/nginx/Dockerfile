@@ -23,5 +23,11 @@ RUN mkdir -p /var/www/wordpress
 # Change ownership of the WordPress directory to the NGINX user for proper permissions
 RUN chown -R www-data:www-data /var/www/wordpress
 
-# cmd used when container start NGINX in the foreground to keep the container running
-CMD ["nginx", "-g", "daemon off;"]
+# Copy the nginx_conf.sh script into the container (at the root /)
+COPY /conf/nginx_conf.sh /
+
+# Make the nginx_conf.sh script executable
+RUN chmod +x /nginx_conf.sh
+
+# Set ENTRYPOINT to execute the nginx_conf.sh script
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/nginx_conf.sh"]
