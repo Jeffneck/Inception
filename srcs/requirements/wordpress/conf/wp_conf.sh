@@ -26,24 +26,24 @@ ping_mariadb_container() {
 
 # Set the start time for the wait loop
 start_time=$(date +%s)
-# Set the timeout duration (20 seconds)
-end_time=$((start_time + 20))
+# Set the timeout duration (60 seconds)
+end_time=$((start_time + 60))
 
 # Loop until the timeout is reached, checking if MariaDB is up
 while [ $(date +%s) -lt $end_time ]; do
 	ping_mariadb_container
 	if [ $? -eq 0 ]; then
-		echo "[=====MARIADB IS UP AND RUNNING====="]  # Success message
+		echo "WORDPRESS CONTAINER: [===== MARIA DB IS READY =====]"  # Success message
 		break
 	else
-		echo "[=====WAITING FOR MARIADB====="]  # Waiting message
+		echo "WORDPRESS CONTAINER: [===== WAITING FOR MARIA DB =====]"  # Waiting message
 		sleep 1  # Wait for 1 second before retrying
 	fi
 done
 
 # Check if the loop reached the timeout without success
 if [ $(date +%s) -ge $end_time ]; then
-	echo "[=====MARIADB IS NOT RESPONDING====="]  # Timeout message
+	echo "WORDPRESS CONTAINER: [=====MARIADB IS NOT RESPONDING=====]"  # Timeout message
 fi
 
 # Download the WordPress core files

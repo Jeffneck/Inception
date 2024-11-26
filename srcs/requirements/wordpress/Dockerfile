@@ -17,4 +17,4 @@ COPY /conf/wp_conf.sh /
 RUN chmod +x wp_conf.sh
 
 # script to run when the container is made 
-ENTRYPOINT ["./wp_conf.sh"]
+ENTRYPOINT ["/bin/bash", "./wp_conf.sh"]
