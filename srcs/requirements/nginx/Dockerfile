@@ -31,4 +31,4 @@ COPY /conf/nginx_conf.sh /
 RUN chmod +x /nginx_conf.sh
 
 # Set ENTRYPOINT to execute the nginx_conf.sh script
-ENTRYPOINT ["/bin/bash", "/usr/local/bin/nginx_conf.sh"]
+ENTRYPOINT ["/bin/bash", "/nginx_conf.sh"]
