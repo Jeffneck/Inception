@@ -1,0 +1,23 @@
+
+# Build images
+docker build -t <imageName>:<tag> # in the dir of the dockerfile
+
+# List images
+docker images #list builded images
+
+# Create a container
+docker run <imageName> #-d run detached(background), -p <containerPort>:<hostPort>(map port)
+
+# List containers
+docker ps #-a (all) 
+
+# Delete all stopped/unused Docker ressources(networks, volumes, containers, images)
+docker system prune 
+
+# Clean all
+docker stop $(docker ps -qa); #stop active containers \
+docker rm $(docker ps -qa); #remove active containers \
+docker rmi -f $(docker images -qa); #remove builded images \
+docker volume rm $(docker volume ls -q); #remove volumes \
+docker network rm $(docker network ls -q) 2>/dev/null #remove network
+
