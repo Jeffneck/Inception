@@ -20,15 +20,8 @@ COPY /conf/nginx.conf /etc/nginx/nginx.conf
 # Create the WordPress directory where files will be served
 RUN mkdir -p /var/www/wordpress
 
-# Change ownership of the WordPress directory (-R = recursive mode) to the NGINX user for proper permissions
-# www-data:www-data == nginxUserId:nginxGroupId => nginx process uses this userId and groupId to work
+# Change ownership of the WordPress directory to the NGINX user for proper permissions
 RUN chown -R www-data:www-data /var/www/wordpress
 
-# Copy the nginx_conf.sh script into the container (at the root /)
-COPY /conf/nginx_conf.sh /
-
-# Make the nginx_conf.sh script executable
-RUN chmod +x /nginx_conf.sh
-
-# Set ENTRYPOINT to execute the nginx_conf.sh script
-ENTRYPOINT ["/bin/bash", "/nginx_conf.sh"]
+# cmd used when container start NGINX in the foreground to keep the container running
+CMD ["nginx", "-g", "daemon off;"]
