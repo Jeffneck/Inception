@@ -4,24 +4,42 @@ docker rmi -f $(docker images -qa); \
 docker volume rm $(docker volume ls -q); \
 docker network rm $(docker network ls -q) 2>/dev/null
 
-
 Put .env at the root
+Show that there is no more containers, image or volumes
+docker ps
+docker images
+docker volume ls
+
 show that the website is not accesible
 docker ps -a to show that no container is working
 docker image -a to show that no image is build
 docker volume ls  to show that no volume is mounted
 
 make all => to build all containers
+show that http isn't working :
+http://hanglade.42.fr
+but https is working :
 https://hanglade.42.fr
-put a comment (click on hello world)
+put a comment : 
+click on hello world in the website
 
+connect as otherUser, to show that you cant accept comment :
 https://hanglade.42.fr/wp-admin/
-connect as otherUser, cant accept comment
-connect as admin, accept comment
+unlog and connect as the admin to accept the comment :
+
 go to check that the comment is here
 
 make down to stop the container
-https://hanglade.42.fr => isn t working
+show that the website is now inaccessible again:
+https://hanglade.42.fr
+
+Show that there is no more containers, image or volumes
+docker ps
+docker images
+but show that volumes are always here
+docker volume ls
+
 make up to restart
-https://hanglade.42.fr => working and comment is inside
+show that the website is now accessible and that the comment are always visible:
+https://hanglade.42.fr
 
