@@ -1,11 +1,15 @@
 become the root : 
 su
 
+
+
 docker stop $(docker ps -qa); \
 docker rm $(docker ps -qa); \
 docker rmi -f $(docker images -qa); \
 docker volume rm $(docker volume ls -q); \
 docker network rm $(docker network ls -q) 2>/dev/null
+
+
 
 Put .env at the root
 Show that there is no more containers, image or volumes
@@ -13,36 +17,257 @@ docker ps
 docker images
 docker volume ls
 
+
+
 show that the website is not accesible
 docker ps -a to show that no container is working
 docker image -a to show that no image is build
 docker volume ls  to show that no volume is mounted
 
-make all => to build all containers
+
+
+#build images volumes and containers :
+make all
 show that http isn't working :
-http://hanglade.42.fr
+http://hanglade.42.fr:80
 but https is working :
-https://hanglade.42.fr
+https://hanglade.42.fr:443
 put a comment : 
 click on hello world in the website
 
-connect as otherUser, to show that you cant accept comment :
+#Show that containers, images, volumes and network were created
+docker ps
+docker images
+but show that volumes are always here
+docker volume ls
+docker network ls
+
+
+#connect as otherUser, to show that you cant accept comment :
 https://hanglade.42.fr/wp-admin/
 unlog and connect as the admin to accept the comment :
 
 go to check that the comment is here
 
-make down to stop the container
+
+
+#make down to stop the container
 show that the website is now inaccessible again:
 https://hanglade.42.fr
 
-Show that there is no more containers, image or volumes
+
+
+#Show that there is no more containers, image or volumes
 docker ps
 docker images
 but show that volumes are always here
 docker volume ls
 
-make up to restart
+
+
+#make up to restart
 show that the website is now accessible and that the comment are always visible:
 https://hanglade.42.fr
+
+
+
+#delete everything with :
+make clean; \
+docker stop $(docker ps -qa); \
+docker rm $(docker ps -qa); \
+docker rmi -f $(docker images -qa); \
+docker volume rm $(docker volume ls -q); \
+docker network rm $(docker network ls -q) 2>/dev/null
+
+
+
+
+#explain why not using network host
+L'isolement des conteneurs est l'une des raisons pour lesquelles Docker est puissant. 
+En utilisant le réseau de l'hôte, vous exposez potentiellement des services ou des ports à l'extérieur 
+qui ne devraient pas être accessibles.
+
+
+
+
+#explain why not using "links" or "--link" between containers
+Il existe maintenant des solutions plus robustes pour gérer les dépendances entre services dans Docker Compose, 
+comme les volumes, les dépendances explicites dans depends_on et les réseaux personnalisés.
+Avec --link, la communication entre conteneurs était limitée à une simple liaison directe, 
+sans la possibilité d'une gestion plus fine des réseaux (comme la création de sous-réseaux, 
+de règles de sécurité, etc.).
+
+
+
+
+#what is a network
+Un réseau Docker (ou Docker network) est une abstraction qui permet de connecter plusieurs conteneurs 
+entre eux ou à l'extérieur de leur environnement. Par défaut, Docker crée plusieurs types de réseaux 
+pour gérer la communication entre les conteneurs de manière isolée et sécurisée. 
+
+Bridge : C'est le réseau par défaut pour les conteneurs. 
+Chaque conteneur connecté à un réseau bridge peut communiquer avec d'autres conteneurs du même réseau,
+ mais est isolé de l'extérieur.
+
+
+
+
+
+
+#hacky patchs unallowed
+
+tail -f est souvent utilisé pour afficher en continu les dernières lignes d'un fichier de log. 
+Cependant, l'utiliser dans un Dockerfile pour maintenir un conteneur en vie est une mauvaise pratique. 
+Cela crée une situation où le conteneur ne fait rien de productif, 
+mais reste "bloqué" pour ne pas se terminer (puisque tail -f continue de s'exécuter sans fin).
+
+
+Exécuter des commandes en arrière-plan (par exemple nginx & bash) est aussi une mauvaise pratique dans Docker. 
+Les conteneurs sont conçus pour exécuter un processus principal et se terminer une fois ce processus terminé. 
+Exécuter des commandes en arrière-plan empêche le conteneur de se terminer correctement et peut compliquer la gestion du processus principal.
+
+bash ou sh dans ENTRYPOINT sans exécuter un script spécifique est également une mauvaise pratique. 
+Cela signifie que tu es en train de démarrer un shell sans raison apparente, 
+ce qui peut conduire à un conteneur inutilisé ou à une exécution moins efficace.
+
+
+
+
+
+
+
+#How docker work 
+Docker est une technologie qui permet de créer, déployer et exécuter des applications dans des environnements isolés appelés conteneurs. 
+Ces conteneurs permettent de regrouper tout ce dont une application a besoin pour fonctionner, y compris le code, 
+les bibliothèques et les configurations système, de manière indépendante du système d'exploitation sur lequel elle s'exécute.
+
+Voici un résumé de son fonctionnement :
+
+Conteneurs : Ce sont des environnements légers et isolés qui contiennent tout le nécessaire pour exécuter une application. 
+Par exemple, si tu veux exécuter une application Python, tu peux créer un conteneur contenant Python, 
+toutes les bibliothèques nécessaires et ton code, sans dépendre des versions de Python installées sur ton ordinateur.
+
+Images Docker : Ce sont des modèles à partir desquels les conteneurs sont créés.
+Une image Docker contient tout ce qui est nécessaire pour exécuter une application dans un conteneur. 
+u peux voir une image comme une photo instantanée d'un environnement d'exécution complet.
+
+Docker Engine : C'est le logiciel qui permet de créer, exécuter et gérer des conteneurs. 
+C'est ce qui permet à Docker de fonctionner sur ta machine (en local ou sur un serveur).
+
+Portabilité : Docker permet de créer des applications qui peuvent être exécutées sur n'importe quelle machine, 
+à condition que Docker soit installé. Par exemple, si tu développes une application dans un conteneur sur ton ordinateur,
+tu peux exactement la déployer sur un serveur distant, et elle fonctionnera de la même manière, sans surprises liées à des différences entre les systèmes.
+
+
+
+
+
+
+
+#What is a docker compose file
+Docker Compose est un outil qui permet de gérer des applications multi-conteneurs. 
+C'est très utile quand ton application est composée de plusieurs services qui doivent interagir entre eux, 
+comme une base de données, un serveur web, une application backend, etc.
+
+
+
+
+
+
+# Docker image with and without docker compose
+Lorsque tu utilises Docker sans Docker Compose, tu interagis directement avec Docker en ligne de commande pour créer et gérer des conteneurs. Voici ce qui se passe :
+
+Création d'une image : Tu construis l'image avec docker build et tu utilises docker run pour démarrer un conteneur à partir de cette image.
+
+Exemple :
+docker build -t my-image .
+docker run -d -p 8080:80 my-image
+
+Dans ce cas, tu devras spécifier chaque option :
+les ports exposés, 
+les volumes montés, 
+les variables d'environnement, etc.
+
+à chaque fois que tu exécutes un conteneur!!!
+Si tu veux exécuter plusieurs services (comme une application web et une base de données), 
+tu devras gérer manuellement les liens entre les conteneurs et leur configuration réseau.
+
+Le docker compose permet d' automatiser le lancement de toutes les images et les liens qui unissent les conteneurs. 
+
+Aspect												Sans Docker Compose																					Avec Docker Compose
+Définition des services							Manuelle, avec docker run pour chaque conteneur														Définie dans un fichier docker-compose.yml
+Gestion des dépendances							Doit être gérée manuellement (liens, réseaux)														Automatique (réseaux, dépendances entre services)
+Lancement des conteneurs						Une commande par conteneur (docker run)																Une seule commande docker-compose up pour tous les services
+Configuration									Nécessite la configuration manuelle des ports, volumes, etc.										Centralisée dans un fichier docker-compose.yml
+Facilité de gestion multi-conteneurs			Plus complexe pour des applications avec plusieurs conteneurs										Simplifiée pour gérer plusieurs services interconnectés
+
+
+
+
+
+
+# Ensure that NGINX can be accessed by port 443 only.
+Montrer le nginx.confChiffrement : 
+
+
+
+
+# Explain SSL/TLS
+SSL/TLS chiffre les données envoyées entre le navigateur (client) et le serveur web (site). Cela empêche des tiers d'intercepter ou de lire ces informations.
+Authentification : Le certificat permet de prouver l'identité du serveur, 
+assurant à l'utilisateur qu'il communique bien avec le site qu'il souhaite visiter et non avec un site frauduleux (attaque de type man-in-the-middle).
+
+
+
+# Explain why our certificate is not accepted by firefox 
+Un certificat auto-signé avec OpenSSL ne passe pas par une autorité de certification qui vérifie l'identité du site web. 
+Cela signifie que personne ne peut confirmer que tu es bien le propriétaire légitime du domaine.
+
+
+
+
+#what is a network
+Un réseau Docker (ou Docker network) est une abstraction qui permet de connecter plusieurs conteneurs 
+entre eux ou à l'extérieur de leur environnement. Par défaut, Docker crée plusieurs types de réseaux 
+pour gérer la communication entre les conteneurs de manière isolée et sécurisée. 
+
+Bridge : C'est le réseau par défaut pour les conteneurs. 
+Chaque conteneur connecté à un réseau bridge peut communiquer avec d'autres conteneurs du même réseau,
+ mais est isolé de l'extérieur.
+
+
+ #NGINX with SSL/TLS
+Docker compose ps' command, ensure that the container was created (using the flag '-p' is authorized if necessary).
+Try to access the service via http (port 80)
+curl http://hanglade.42.fr:80
+
+
+#WordPress with php-fpm and its volume
+=se placer dans le dossier srcs/
+docker compose ps
+docker volume ls
+docker volume inspect <volume name>  => path /home/login/data/
+
+aller dans admin et editer la sample page
+retourner sur le site et cliquer sur le lien en haut a droite ou :
+https://hanglade.42.fr?page_id=2d
+
+#MariaDB
+docker volume ls
+docker volume inspect <volume name>
+
+Liste les conteneurs en cours d'exécution pour obtenir l'ID ou le nom du conteneur MariaDB :
+docker ps
+
+Connecte-toi au conteneur MariaDB via docker exec :
+docker exec -it <mariadb_container_id_or_name> bash
+
+Cela te donne un terminal interactif dans le conteneur.
+mysql -u root -p
+entrer le mot de passe defini dans le .env :SQLeader
+
+Une fois connecté, tu peux vérifier que la base de données n'est pas vide en listant les bases de données disponibles :
+SHOW DATABASES;
+Si la base de données contient des tables et des informations, cela signifie qu'elle n'est pas vide.
+
 
