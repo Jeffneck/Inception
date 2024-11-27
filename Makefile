@@ -26,11 +26,11 @@ start:
 stop:
 	$(DOCKER_COMPOSE) stop  # Stop the running containers without removing them
 
-# Target to bring down the entire Docker Compose setup (stops and removes containers)
+# Target to bring down the entire Docker Compose setup (stops and removes containers but not volumes)
 down:
 	$(DOCKER_COMPOSE) down  # Stop and remove containers, networks, and volumes defined in the Compose file
 
-# Target to clean up stopped containers, unused images, and data directories
+# Target to clean up everything (Warning : delete volumes too)
 clean:
 	@docker stop $$(docker ps -qa) || true  # Stop all containers (ignore errors if no containers are running)
 	@docker rm $$(docker ps -qa) || true  # Remove all containers (ignore errors if no containers exist)

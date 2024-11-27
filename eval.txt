@@ -1,1 +1,27 @@
-ou placer le .env avant evaluation
+docker stop $(docker ps -qa); \
+docker rm $(docker ps -qa); \
+docker rmi -f $(docker images -qa); \
+docker volume rm $(docker volume ls -q); \
+docker network rm $(docker network ls -q) 2>/dev/null
+
+
+Put .env at the root
+show that the website is not accesible
+docker ps -a to show that no container is working
+docker image -a to show that no image is build
+docker volume ls  to show that no volume is mounted
+
+make all => to build all containers
+https://hanglade.42.fr
+put a comment (click on hello world)
+
+https://hanglade.42.fr/wp-admin/
+connect as otherUser, cant accept comment
+connect as admin, accept comment
+go to check that the comment is here
+
+make down to stop the container
+https://hanglade.42.fr => isn t working
+make up to restart
+https://hanglade.42.fr => working and comment is inside
+
